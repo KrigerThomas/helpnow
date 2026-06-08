@@ -6,10 +6,15 @@
 
 Conecta clientes que precisam de serviços (elétrica, hidráulica, limpeza, TI, pintura) a prestadores autônomos, simplificando a contratação sem depender de indicações informais.
 
-[![Testes](https://github.com/KrigerThomas/helpnow/actions/workflows/tests.yml/badge.svg)](https://github.com/KrigerThomas/helpnow/actions/workflows/tests.yml)
-[![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python&logoColor=white)](https://www.python.org/)
-[![Flask](https://img.shields.io/badge/Flask-3.x-black?logo=flask)](https://flask.palletsprojects.com/)
-[![Licença](https://img.shields.io/badge/Licença-MIT-green)](LICENSE)
+![Testes](https://github.com/KrigerThomas/helpnow/actions/workflows/tests.yml/badge.svg)
+&nbsp;
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
+&nbsp;
+![Flask](https://img.shields.io/badge/Flask-3.x-000000?logo=flask&logoColor=white)
+&nbsp;
+![Licença](https://img.shields.io/badge/Licença-MIT-22c55e)
+
+<br>
 
 Projeto desenvolvido para a disciplina de **Desenvolvimento Web — UVV**  
 **Grupo:** Antony Novais · Heitor Rodrigues · Thomás Kriger
@@ -20,7 +25,24 @@ Projeto desenvolvido para a disciplina de **Desenvolvimento Web — UVV**
 
 ## Capturas de tela
 
-> Adicione prints do projeto aqui! Sugestão: arraste imagens direto para o README no GitHub.
+<table>
+  <tr>
+    <td align="center"><b>Página inicial</b></td>
+    <td align="center"><b>Busca de profissionais</b></td>
+  </tr>
+  <tr>
+    <td><img src=".github/images/tela_index.png" alt="Página inicial" width="100%"/></td>
+    <td><img src=".github/images/tela_busca.png" alt="Busca" width="100%"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Painel do prestador</b></td>
+    <td align="center"><b>Perfil do usuário</b></td>
+  </tr>
+  <tr>
+    <td><img src=".github/images/tela_prestador.png" alt="Painel do prestador" width="100%"/></td>
+    <td><img src=".github/images/tela_perfil.png" alt="Perfil" width="100%"/></td>
+  </tr>
+</table>
 
 ---
 
@@ -51,7 +73,7 @@ Projeto desenvolvido para a disciplina de **Desenvolvimento Web — UVV**
 
 ## Diagrama do banco de dados
 
-![Diagrama ER](er_diagram.png)
+![Diagrama ER](docs/er_diagram.png)
 
 ---
 
@@ -150,8 +172,20 @@ helpnow/
 ├── pyproject.toml            # Dependências e metadados
 ├── tasks.py                  # Automação com Invoke
 ├── .env.example              # Template de variáveis de ambiente
-├── gerar_er.py               # Gerador do diagrama ER
-├── er_diagram.png            # Diagrama do banco de dados
+├── LICENSE
+├── README.md
+│
+├── .github/
+│   ├── images/               # Screenshots do projeto (README)
+│   └── workflows/
+│       └── tests.yml         # CI — roda os testes a cada push
+│
+├── scripts/
+│   ├── gerar_er.py           # Gerador do diagrama ER
+│   └── make_env.py           # Setup de ambiente (Windows)
+│
+├── docs/
+│   └── er_diagram.png        # Diagrama do banco de dados
 │
 ├── helpnow/
 │   ├── ext/                  # Extensões Flask (db, login, config, cli…)
