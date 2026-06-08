@@ -1,0 +1,61 @@
+# ============================================================
+# HelpNOW — .gitignore
+# ============================================================
+
+# --- Ambiente virtual Python ---
+venv/
+.venv/
+env/
+ENV/
+
+# --- Arquivos compilados Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# --- Banco de dados local ---
+*.db
+*.sqlite
+*.sqlite3
+
+# --- Variáveis de ambiente (NUNCA suba para o GitHub!) ---
+.env
+.env.dev
+.env.prod
+.env.test
+.env.local
+*.env
+
+# --- Cobertura de testes ---
+.coverage
+htmlcov/
+.pytest_cache/
+coverage.xml
+
+# --- Build e distribuição ---
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# --- IDEs e editores ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- Sistema operacional ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Arquivos temporários ---
+*.tmp
+*.bak
