@@ -1,0 +1,492 @@
+{% extends 'main/base.html' %}
+{% block title %}HelpNOW – Painel do Prestador{% endblock %}
+
+{% block content %}
+
+{# ── Hero ── #}
+<section class="section pb-0">
+  <div class="container">
+    <div class="hero helpnow-hero-prestador is-rounded mb-5">
+      <div class="hero-body">
+        <div class="columns is-vcentered">
+          <div class="column">
+            <p class="tag helpnow-tag-prestador mb-3" style="gap:.35rem;">
+              <span class="icon"><i class="fas fa-hard-hat"></i></span>
+              <span>Prestador</span>
+            </p>
+            <h1 class="title is-2 has-text-white">Olá, {{ user.name.split()[0] }}! 🛠️</h1>
+            {# Sem .subtitle — usa p simples para evitar margin negativo do Bulma #}
+            <p class="has-text-white mt-1 mb-4" style="opacity:.9;">
+              Gerencie seus serviços e atenda novos clientes.
+            </p>
+            <a href="{{ url_for('main.novo_servico') }}" class="button is-white is-rounded">
+              <span class="icon"><i class="fas fa-plus"></i></span><span>Novo Serviço</span>
+            </a>
+          </div>
+          <div class="column is-narrow is-hidden-mobile">
+            {% if user.photo %}
+              <img src="{{ user.photo }}" alt=""
+                   style="width:80px;height:80px;border-radius:50%;object-fit:cover;
+                          border:3px solid rgba(255,255,255,.5);"
+                   onerror="this.style.display='none'">
+            {% else %}
+              <div class="helpnow-avatar-circle-prestador">
+                <span style="font-size:2.5rem;">🛠️</span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ── Métricas ── #}
+<section class="section pt-4 pb-3">
+  <div class="container">
+    <div class="columns is-multiline">
+      <div class="column is-3-desktop is-6-tablet">
+        <div class="box helpnow-metric-card has-text-centered">
+          <p class="heading">Pendentes</p>
+          <p class="title is-2 has-text-warning">{{ solicitacoes_pendentes }}</p>
+        </div>
+      </div>
+      <div class="column is-3-desktop is-6-tablet">
+        <div class="box helpnow-metric-card has-text-centered">
+          <p class="heading">Aceitos</p>
+          <p class="title is-2 has-text-success">{{ aceitos_mes }}</p>
+        </div>
+      </div>
+      <div class="column is-3-desktop is-6-tablet">
+        <div class="box helpnow-metric-card has-text-centered">
+          <p class="heading">Meus serviços</p>
+          <p class="title is-2 has-text-danger">{{ total_servicos }}</p>
+        </div>
+      </div>
+      <div class="column is-3-desktop is-6-tablet">
+        <div class="box helpnow-metric-card has-text-centered">
+          <p class="heading">Avaliação média</p>
+          {% if avaliacao_media %}
+            <p class="title is-2 has-text-link">
+              {{ avaliacao_media }}
+              <span class="has-text-warning" style="font-size:1.5rem;">★</span>
+            </p>
+          {% else %}
+            <p class="title is-2 has-text-grey-light">—</p>
+            <p class="is-size-7 has-text-grey">Ainda sem avaliações</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ── Solicitações pendentes ── #}
+<section class="section pt-2 pb-4">
+  <div class="container">
+    <h2 class="title is-5 mb-4">
+      <span class="icon has-text-warning"><i class="fas fa-bell"></i></span>
+      Solicitações pendentes
+    </h2>
+    {% if solicitacoes %}
+      <div class="columns is-multiline">
+        {% for s in solicitacoes %}
+        <div class="column is-6-desktop">
+          <div class="card helpnow-solicitacao-card-prestador">
+            <div class="card-content">
+
+              {# Cabeçalho do card: sem .title/.subtitle para evitar margin negativo #}
+              <div class="is-flex is-align-items-center mb-3" style="gap:.75rem;">
+                <div style="flex-shrink:0; width:44px; height:44px;">
+                  {% if s.cliente.photo %}
+                    <img src="{{ s.cliente.photo }}"
+                         alt="{{ s.cliente.name }}"
+                         style="width:44px; height:44px; border-radius:50%;
+                                object-fit:cover; display:block;"
+                         onerror="this.style.display='none';
+                                  this.nextElementSibling.style.display='flex';">
+                    <div style="display:none; width:44px; height:44px; border-radius:50%;
+                                background:linear-gradient(135deg,#ff6b35,#d94f1a);
+                                color:#fff; font-weight:700; font-size:11.0rem;
+                                align-items:center; justify-content:center;">
+                      {{ s.cliente.name[0].upper() }}
+                    </div>
+                  {% else %}
+                    <div style="width:44px; height:44px; border-radius:50%;
+                                background:linear-gradient(135deg,#ff6b35,#d94f1a);
+                                color:#fff; font-weight:700; font-size:11.0rem;
+                                display:flex; align-items:center; justify-content:center;">
+                      {{ s.cliente.name[0].upper() }}
+                    </div>
+                  {% endif %}
+                </div>
+                <div style="min-width:0; flex:1;">
+                  <p class="has-text-weight-semibold" style="font-size:.95rem; line-height:1.3;">
+                    {{ s.cliente.name }}
+                  </p>
+                  <p class="is-size-7 has-text-grey" style="line-height:1.3;">
+                    {{ s.servico.titulo }}
+                  </p>
+                </div>
+                <span class="tag is-warning is-light is-rounded" style="flex-shrink:0;">Pendente</span>
+              </div>
+
+              {% if s.mensagem %}
+              <p class="is-size-7 mb-2" style="color:#555;">{{ s.mensagem | truncate(100) }}</p>
+              {% endif %}
+
+              <p class="is-size-7 has-text-grey mb-3">
+                <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+                {{ s.endereco_texto or '—' }}
+                <span class="mx-1">·</span>
+                <span class="icon"><i class="fas fa-clock"></i></span>
+                {{ s.created_at.strftime('%d/%m/%Y %H:%M') }}
+              </p>
+
+              <div class="buttons">
+                <form method="POST" action="{{ url_for('main.aceitar_solicitacao', id=s.id) }}"
+                      style="display:inline;">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="button is-success is-small is-rounded">
+                    <span class="icon"><i class="fas fa-check"></i></span><span>Aceitar</span>
+                  </button>
+                </form>
+                <form method="POST" action="{{ url_for('main.recusar_solicitacao', id=s.id) }}"
+                      style="display:inline;">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="button is-danger is-light is-small is-rounded">
+                    <span class="icon"><i class="fas fa-times"></i></span><span>Recusar</span>
+                  </button>
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="notification is-light helpnow-empty-state">
+        <span class="icon is-large has-text-grey-light"><i class="fas fa-inbox fa-2x"></i></span>
+        <p class="mt-2 has-text-grey">Nenhuma solicitação pendente no momento.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{# ── Meus serviços ── #}
+<section class="section pt-2 pb-4">
+  <div class="container">
+    <div class="columns is-vcentered mb-4">
+      <div class="column">
+        <h2 class="title is-5 mb-0">
+          <span class="icon has-text-link"><i class="fas fa-briefcase"></i></span>
+          Meus serviços
+        </h2>
+      </div>
+      <div class="column is-narrow">
+        <a href="{{ url_for('main.novo_servico') }}"
+           class="button helpnow-btn-prestador is-small is-rounded">
+          <span class="icon"><i class="fas fa-plus"></i></span><span>Novo</span>
+        </a>
+      </div>
+    </div>
+    {% if servicos %}
+      <div class="columns is-multiline">
+        {% for sv in servicos %}
+        <div class="column is-4-desktop is-6-tablet">
+          <div class="card">
+            <div class="card-content">
+              <div class="tags mb-2">
+                <span class="tag is-info is-light">{{ sv.categoria }}</span>
+                {% if sv.localidade %}<span class="tag is-light">{{ sv.localidade }}</span>{% endif %}
+              </div>
+              <p class="has-text-weight-semibold mb-1" style="font-size:.95rem;">{{ sv.titulo }}</p>
+              <p class="is-size-7 has-text-grey mb-3">{{ sv.descricao | truncate(80) }}</p>
+              {% if sv.preco %}
+              <div class="tags has-addons mb-3">
+                <span class="tag is-dark">R$</span>
+                <span class="tag is-success">{{ "%.2f"|format(sv.preco) }}</span>
+              </div>
+              {% endif %}
+              <div class="buttons are-small">
+                <a href="{{ url_for('main.editar_servico', id=sv.id) }}"
+                   class="button is-link is-light is-rounded">
+                  <span class="icon"><i class="fas fa-edit"></i></span><span>Editar</span>
+                </a>
+                <form method="POST" action="{{ url_for('main.desativar_servico', id=sv.id) }}"
+                      style="display:inline;">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="button is-danger is-light is-rounded"
+                          onclick="return confirm('Remover este serviço da listagem?')">
+                    <span class="icon"><i class="fas fa-trash-alt"></i></span><span>Remover</span>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="notification is-light helpnow-empty-state">
+        <span class="icon is-large has-text-grey-light"><i class="fas fa-tools fa-2x"></i></span>
+        <p class="mt-2 has-text-grey">Você ainda não cadastrou nenhum serviço.</p>
+        <a href="{{ url_for('main.novo_servico') }}"
+           class="button helpnow-btn-prestador is-rounded mt-3">
+          Cadastrar meu primeiro serviço
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{# ── Histórico ── #}
+<section class="section pt-2 pb-5">
+  <div class="container">
+    <h2 class="title is-5 mb-4">
+      <span class="icon has-text-grey"><i class="fas fa-history"></i></span>
+      Histórico de atendimentos
+    </h2>
+    {% if sol_historico %}
+      <div class="columns is-multiline">
+        {% for s in sol_historico %}
+        <div class="column is-6-desktop">
+          <div class="card" style="opacity:.9;">
+            <div class="card-content">
+              <div class="is-flex is-align-items-center mb-2" style="gap:.75rem;">
+                {# Avatar do cliente: foto real ou inicial em círculo laranja #}
+                <div style="flex-shrink:0; width:44px; height:44px;">
+                  {% if s.cliente.photo %}
+                    <img src="{{ s.cliente.photo }}"
+                         alt="{{ s.cliente.name }}"
+                         style="width:44px; height:44px; border-radius:50%;
+                                object-fit:cover; display:block;"
+                         onerror="this.style.display='none';
+                                  this.nextElementSibling.style.display='flex';">
+                    <div style="display:none; width:44px; height:44px; border-radius:50%;
+                                background:linear-gradient(135deg,#ff6b35,#d94f1a);
+                                color:#fff; font-weight:700; font-size:1.1rem;
+                                align-items:center; justify-content:center;">
+                      {{ s.cliente.name[0].upper() }}
+                    </div>
+                  {% else %}
+                    <div style="width:44px; height:44px; border-radius:50%;
+                                background:linear-gradient(135deg,#ff6b35,#d94f1a);
+                                color:#fff; font-weight:700; font-size:1.1rem;
+                                display:flex; align-items:center; justify-content:center;">
+                      {{ s.cliente.name[0].upper() }}
+                    </div>
+                  {% endif %}
+                </div>
+                <div style="min-width:0; flex:1;">
+                  <p class="has-text-weight-semibold"
+                     style="font-size:.95rem; line-height:1.3;">
+                    {{ s.cliente.name }}
+                  </p>
+                  <p class="is-size-7 has-text-grey" style="line-height:1.3;">
+                    {{ s.servico.titulo }}
+                  </p>
+                </div>
+                <span class="tag is-rounded is-light
+                  {% if s.status == 'Concluído' %}is-success
+                  {% elif s.status == 'Aceito'   %}is-info
+                  {% else %}is-danger{% endif %}"
+                  style="flex-shrink:0;">
+                  {{ s.status }}
+                </span>
+              </div>
+
+              {% if s.nota %}
+              <p class="is-size-7 mt-1">
+                Avaliação:
+                {% for i in range(1,6) %}
+                  <span class="has-text-warning">
+                    {% if i <= s.nota %}★{% else %}☆{% endif %}
+                  </span>
+                {% endfor %}
+                <strong>({{ s.nota }}/5)</strong>
+              </p>
+              {% endif %}
+
+              <div class="is-flex is-align-items-center is-justify-content-space-between mt-2">
+                <p class="is-size-7 has-text-grey">
+                  <span class="icon"><i class="fas fa-calendar"></i></span>
+                  {{ s.created_at.strftime('%d/%m/%Y') }}
+                </p>
+                {# Botão que abre o modal de detalhes desta solicitação #}
+                <button class="button is-info is-light is-small is-rounded"
+                        onclick="abrirModal('modal-prest-{{ s.id }}')">
+                  <span class="icon"><i class="fas fa-info-circle"></i></span>
+                  <span>Detalhes</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {# ── Modal de detalhes para o prestador ── #}
+        <div class="modal" id="modal-prest-{{ s.id }}">
+          <div class="modal-background"
+               onclick="fecharModal('modal-prest-{{ s.id }}')"></div>
+          <div class="modal-card" style="border-radius:12px; overflow:hidden;">
+
+            <header class="modal-card-head"
+                    style="background: {% if s.status == 'Concluído' %}#257942{% elif s.status == 'Aceito' %}#1a50b5{% else %}#cc0f35{% endif %};">
+              <p class="modal-card-title has-text-white">
+                <span class="icon"><i class="fas fa-clipboard-check"></i></span>
+                Atendimento #{{ s.id }}
+              </p>
+              <button class="delete" aria-label="fechar"
+                      onclick="fecharModal('modal-prest-{{ s.id }}')"></button>
+            </header>
+
+            <section class="modal-card-body">
+
+              {# Status + nota recebida #}
+              <div class="is-flex is-align-items-center mb-4" style="gap:.75rem;">
+                <span class="tag is-rounded is-medium
+                  {% if s.status == 'Concluído' %}is-success
+                  {% elif s.status == 'Aceito'   %}is-info
+                  {% else %}is-danger{% endif %}">
+                  {{ s.status }}
+                </span>
+                {% if s.nota %}
+                  <span class="is-size-6">
+                    {% for i in range(1,6) %}
+                      <span class="has-text-warning">
+                        {% if i <= s.nota %}★{% else %}☆{% endif %}
+                      </span>
+                    {% endfor %}
+                    <strong class="ml-1">({{ s.nota }}/5)</strong>
+                  </span>
+                {% else %}
+                  <span class="is-size-7 has-text-grey">Sem avaliação</span>
+                {% endif %}
+              </div>
+
+              {# Serviço prestado #}
+              <div class="box mb-3" style="padding:.9rem;">
+                <p class="modal-section-label">Serviço prestado</p>
+                <p class="has-text-weight-semibold">{{ s.servico.titulo }}</p>
+                <p class="is-size-7 has-text-grey">
+                  <span class="icon is-small"><i class="fas fa-tag"></i></span>
+                  {{ s.servico.categoria }}
+                  {% if s.servico.preco %}
+                  <span class="mx-1">·</span>
+                  <span class="icon is-small"><i class="fas fa-dollar-sign"></i></span>
+                  R$ {{ "%.2f"|format(s.servico.preco) }}
+                  {% endif %}
+                </p>
+              </div>
+
+              {# Cliente — com foto se disponível #}
+              <div class="box mb-3" style="padding:.9rem;">
+                <p class="modal-section-label">Cliente</p>
+                <div class="is-flex is-align-items-center mb-2" style="gap:.65rem;">
+                  {% if s.cliente.photo %}
+                    <img src="{{ s.cliente.photo }}"
+                         alt="{{ s.cliente.name }}"
+                         style="width:40px; height:40px; border-radius:50%;
+                                object-fit:cover; flex-shrink:0;"
+                         onerror="this.style.display='none';
+                                  this.nextElementSibling.style.display='flex';">
+                    <div style="display:none; width:40px; height:40px; border-radius:50%;
+                                background:linear-gradient(135deg,#ff6b35,#d94f1a);
+                                color:#fff; font-weight:700; font-size:1rem; flex-shrink:0;
+                                align-items:center; justify-content:center;">
+                      {{ s.cliente.name[0].upper() }}
+                    </div>
+                  {% else %}
+                    <div style="width:40px; height:40px; border-radius:50%;
+                                background:linear-gradient(135deg,#ff6b35,#d94f1a);
+                                color:#fff; font-weight:700; font-size:1rem; flex-shrink:0;
+                                display:flex; align-items:center; justify-content:center;">
+                      {{ s.cliente.name[0].upper() }}
+                    </div>
+                  {% endif %}
+                  <p class="has-text-weight-semibold">{{ s.cliente.name }}</p>
+                </div>
+                <p class="is-size-7 has-text-grey">
+                  <span class="icon is-small"><i class="fas fa-envelope"></i></span>
+                  {{ s.cliente.email }}
+                </p>
+                {% if s.cliente.phone %}
+                <p class="is-size-7 has-text-grey">
+                  <span class="icon is-small"><i class="fas fa-phone"></i></span>
+                  {{ s.cliente.phone }}
+                </p>
+                {% endif %}
+              </div>
+
+              {# Pedido do cliente #}
+              <div class="box mb-3" style="padding:.9rem;">
+                <p class="modal-section-label">Pedido do cliente</p>
+                {% if s.mensagem %}
+                <p class="is-size-7 mb-2" style="color:#444; line-height:1.5;">
+                  {{ s.mensagem }}
+                </p>
+                {% endif %}
+                {% if s.endereco_texto %}
+                <p class="is-size-7 has-text-grey">
+                  <span class="icon is-small"><i class="fas fa-map-marker-alt"></i></span>
+                  {{ s.endereco_texto }}
+                </p>
+                {% endif %}
+              </div>
+
+              <p class="is-size-7 has-text-grey">
+                <span class="icon is-small"><i class="fas fa-clock"></i></span>
+                Solicitado em {{ s.created_at.strftime('%d/%m/%Y às %H:%M') }}
+              </p>
+
+            </section>
+
+            <footer class="modal-card-foot">
+              <button class="button is-light is-rounded"
+                      onclick="fecharModal('modal-prest-{{ s.id }}')">
+                Fechar
+              </button>
+            </footer>
+
+          </div>
+        </div>
+        {# ── fim modal ── #}
+
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="has-text-grey is-size-7 ml-2">
+        Nenhum atendimento no histórico ainda.
+      </p>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+function abrirModal(id) {
+  document.getElementById(id).classList.add('is-active');
+  document.documentElement.classList.add('is-clipped');
+}
+function fecharModal(id) {
+  document.getElementById(id).classList.remove('is-active');
+  document.documentElement.classList.remove('is-clipped');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal.is-active').forEach(m => {
+      m.classList.remove('is-active');
+      document.documentElement.classList.remove('is-clipped');
+    });
+  }
+});
+</script>
+
+<style>
+.modal-section-label {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: #aaa; margin-bottom: .4rem;
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,428 @@
+{% extends 'main/base.html' %}
+{% block title %}HelpNOW – Painel do Cliente{% endblock %}
+
+{% block content %}
+
+{# ── Hero ── #}
+<section class="section pb-0">
+  <div class="container">
+    <div class="hero helpnow-hero-cliente is-rounded mb-5">
+      <div class="hero-body">
+        <div class="columns is-vcentered">
+          <div class="column">
+            <p class="tag helpnow-tag-cliente mb-3" style="gap:.35rem;">
+              <span class="icon"><i class="fas fa-user"></i></span>
+              <span>Cliente</span>
+            </p>
+            <h1 class="title is-2 has-text-white">Olá, {{ user.name.split()[0] }}! 👋</h1>
+            <p class="has-text-white mt-1" style="opacity:.9;">O que você precisa resolver hoje?</p>
+            <a href="{{ url_for('main.buscar') }}" class="button is-white is-rounded mt-2">
+              <span class="icon"><i class="fas fa-search"></i></span><span>Buscar profissionais</span>
+            </a>
+          </div>
+          <div class="column is-narrow is-hidden-mobile">
+            {% if user.photo %}
+              <img src="{{ user.photo }}" alt="{{ user.name }}"
+                   style="width:80px;height:80px;border-radius:50%;object-fit:cover;
+                          border:3px solid rgba(255,255,255,.5);"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              <div class="helpnow-avatar-circle" style="display:none;">
+                <span class="icon is-large has-text-white" style="font-size:2.5rem;">
+                  <i class="fas fa-user-circle"></i>
+                </span>
+              </div>
+            {% else %}
+              <div class="helpnow-avatar-circle">
+                <span class="icon is-large has-text-white" style="font-size:2.5rem;">
+                  <i class="fas fa-user-circle"></i>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ── Busca rápida ── #}
+<section class="section pt-4 pb-3">
+  <div class="container">
+    <form method="GET" action="{{ url_for('main.buscar') }}">
+      <div class="box helpnow-search-box">
+        <h2 class="title is-6 mb-3">
+          <span class="icon has-text-link"><i class="fas fa-search"></i></span>
+          Encontrar um profissional
+        </h2>
+        <div class="field is-grouped">
+          <div class="control is-expanded">
+            <div class="select is-fullwidth">
+              <select name="categoria">
+                <option value="">Categoria de serviço</option>
+                {% for cat in ['Elétrica','Hidráulica','Limpeza','Informática','Pintura','Outros'] %}
+                <option>{{ cat }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="control is-expanded">
+            <input class="input" type="text" name="localidade" placeholder="Bairro ou cidade">
+          </div>
+          <div class="control">
+            <button type="submit" class="button helpnow-btn-primary is-rounded">
+              <span class="icon"><i class="fas fa-search"></i></span><span>Buscar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+{# ── Categorias ── #}
+<section class="section pt-2 pb-4">
+  <div class="container">
+    <h2 class="title is-5 mb-4">
+      <span class="icon has-text-warning"><i class="fas fa-th-large"></i></span>
+      Categorias disponíveis
+    </h2>
+    <div class="columns is-multiline">
+      {% for icon, nome, css in [
+          ('fas fa-bolt','Elétrica','cat-eletrica'),('fas fa-faucet','Hidráulica','cat-hidraulica'),
+          ('fas fa-broom','Limpeza','cat-limpeza'),('fas fa-laptop','Informática','cat-informatica'),
+          ('fas fa-paint-roller','Pintura','cat-pintura'),('fas fa-tools','Outros','cat-outros'),
+      ] %}
+      <div class="column is-2-desktop is-4-tablet is-6-mobile">
+        <a href="{{ url_for('main.buscar') }}?categoria={{ nome }}"
+           class="box has-text-centered helpnow-categoria-card {{ css }}">
+          <span class="icon is-large mb-2"><i class="{{ icon }} fa-2x"></i></span>
+          <p class="is-size-6 has-text-weight-semibold mt-2">{{ nome }}</p>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ── NOVO: Solicitações ativas (Pendente + Aceito) ── #}
+<section class="section pt-2 pb-4">
+  <div class="container">
+    <h2 class="title is-5 mb-4">
+      <span class="icon has-text-link"><i class="fas fa-clock"></i></span>
+      Solicitações em andamento
+    </h2>
+
+    {% if sol_ativas %}
+      <div class="columns is-multiline">
+        {% for s in sol_ativas %}
+        <div class="column is-6-desktop">
+          <div class="card helpnow-solicitacao-card">
+            <div class="card-content">
+              <div class="is-flex is-align-items-center mb-2" style="gap:.75rem;">
+                <div style="flex-shrink:0; width:44px; height:44px;">
+                  {% if s.prestador.photo %}
+                    <img src="{{ s.prestador.photo }}"
+                         alt="{{ s.prestador.name }}"
+                         style="width:44px; height:44px; border-radius:50%;
+                                object-fit:cover; display:block;"
+                         onerror="this.style.display='none';
+                                  this.nextElementSibling.style.display='flex';">
+                    <div style="display:none; width:44px; height:44px; border-radius:50%;
+                                background:linear-gradient(135deg,#3273dc,#1a50b5);
+                                color:#fff; font-weight:700; font-size:11.0rem;
+                                align-items:center; justify-content:center;">
+                      {{ s.prestador.name[0].upper() }}
+                    </div>
+                  {% else %}
+                    <div style="width:44px; height:44px; border-radius:50%;
+                                background:linear-gradient(135deg,#3273dc,#1a50b5);
+                                color:#fff; font-weight:700; font-size:11.0rem;
+                                display:flex; align-items:center; justify-content:center;">
+                      {{ s.prestador.name[0].upper() }}
+                    </div>
+                  {% endif %}
+                </div>
+                <div style="min-width:0; flex:1;">
+                  <p class="has-text-weight-semibold" style="font-size:.95rem; line-height:1.3;">{{ s.servico.titulo }}</p>
+                  <p class="is-size-7 has-text-grey" style="line-height:1.3;">{{ s.prestador.name }}</p>
+                </div>
+                <span class="tag is-rounded is-light {% if s.status == 'Aceito' %}is-success{% else %}is-warning{% endif %}" style="flex-shrink:0;">
+                  {{ s.status }}
+                </span>
+              </div>
+              <p class="is-size-7 has-text-grey mt-2">
+                <span class="icon"><i class="fas fa-calendar"></i></span>
+                {{ s.created_at.strftime('%d/%m/%Y %H:%M') }}
+              </p>
+              {# Botão concluir só aparece quando o prestador já aceitou #}
+              {% if s.status == 'Aceito' %}
+              <form method="POST" action="{{ url_for('main.concluir_solicitacao', id=s.id) }}" class="mt-3">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="field">
+                  <label class="label is-small">Avalie o serviço</label>
+                  <div class="helpnow-stars mb-2">
+                    {% for n in [1,2,3,4,5] %}
+                    <label class="helpnow-star-label">
+                      <input type="radio" name="nota" value="{{ n }}" required style="display:none;">
+                      <span class="icon has-text-warning star-icon" data-val="{{ n }}">
+                        <i class="far fa-star"></i>
+                      </span>
+                    </label>
+                    {% endfor %}
+                  </div>
+                </div>
+                <button type="submit" class="button is-success is-small is-rounded">
+                  <span class="icon"><i class="fas fa-check-double"></i></span>
+                  <span>Marcar como concluído</span>
+                </button>
+              </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="notification is-light helpnow-empty-state">
+        <span class="icon is-large has-text-grey-light"><i class="fas fa-clock fa-2x"></i></span>
+        <p class="mt-2 has-text-grey">Nenhuma solicitação em andamento.</p>
+        <a href="{{ url_for('main.buscar') }}" class="button helpnow-btn-primary is-rounded mt-3">
+          Buscar profissionais agora
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+
+{# ── Histórico (Concluído + Recusado) com botão Detalhes ── #}
+<section class="section pt-2 pb-5">
+  <div class="container">
+    <h2 class="title is-5 mb-4">
+      <span class="icon has-text-grey"><i class="fas fa-history"></i></span>
+      Histórico de solicitações
+    </h2>
+
+    {% if sol_historico %}
+      <div class="columns is-multiline">
+        {% for s in sol_historico %}
+        <div class="column is-6-desktop">
+          <div class="card" style="opacity:.88;">
+            <div class="card-content">
+              <div class="is-flex is-align-items-center" style="gap:.75rem;">
+                <span class="icon is-large has-text-grey-light" style="flex-shrink:0;">
+                  <i class="fas fa-tools fa-2x"></i>
+                </span>
+                <div style="min-width:0; flex:1;">
+                  <p class="has-text-weight-semibold"
+                     style="font-size:.95rem; line-height:1.3;">
+                    {{ s.servico.titulo }}
+                  </p>
+                  <p class="is-size-7 has-text-grey" style="line-height:1.3;">
+                    {{ s.prestador.name }}
+                  </p>
+                </div>
+                <span class="tag is-rounded is-light
+                  {% if s.status == 'Concluído' %}is-success
+                  {% else %}is-danger{% endif %}"
+                  style="flex-shrink:0;">
+                  {{ s.status }}
+                </span>
+              </div>
+
+              <div class="is-flex is-align-items-center is-justify-content-space-between mt-3">
+                <p class="is-size-7 has-text-grey">
+                  <span class="icon"><i class="fas fa-calendar"></i></span>
+                  {{ s.created_at.strftime('%d/%m/%Y') }}
+                </p>
+                {# Botão que abre o modal de detalhes desta solicitação #}
+                <button class="button is-info is-light is-small is-rounded"
+                        onclick="abrirModal('modal-cli-{{ s.id }}')">
+                  <span class="icon"><i class="fas fa-info-circle"></i></span>
+                  <span>Detalhes</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {# ── Modal de detalhes — um por solicitação ── #}
+        <div class="modal" id="modal-cli-{{ s.id }}">
+          <div class="modal-background" onclick="fecharModal('modal-cli-{{ s.id }}')"></div>
+          <div class="modal-card" style="border-radius:12px; overflow:hidden;">
+
+            <header class="modal-card-head"
+                    style="background: {% if s.status == 'Concluído' %}#257942{% else %}#e02020{% endif %};">
+              <p class="modal-card-title has-text-white">
+                <span class="icon"><i class="fas fa-clipboard-list"></i></span>
+                Detalhes da Solicitação #{{ s.id }}
+              </p>
+              <button class="delete" aria-label="fechar"
+                      onclick="fecharModal('modal-cli-{{ s.id }}')"></button>
+            </header>
+
+            <section class="modal-card-body">
+
+              {# Status + Avaliação #}
+              <div class="is-flex is-align-items-center mb-4" style="gap:.75rem;">
+                <span class="tag is-rounded is-medium
+                  {% if s.status == 'Concluído' %}is-success{% else %}is-danger{% endif %}">
+                  {{ s.status }}
+                </span>
+                {% if s.nota %}
+                  <span class="is-size-6">
+                    {% for i in range(1,6) %}
+                      <span class="has-text-warning">
+                        {% if i <= s.nota %}★{% else %}☆{% endif %}
+                      </span>
+                    {% endfor %}
+                    <strong class="ml-1">({{ s.nota }}/5)</strong>
+                  </span>
+                {% endif %}
+              </div>
+
+              {# Serviço e prestador #}
+              <div class="box mb-3" style="padding:.9rem;">
+                <p class="helpnow-form-section-title">Serviço contratado</p>
+                <p class="has-text-weight-semibold">{{ s.servico.titulo }}</p>
+                <p class="is-size-7 has-text-grey">
+                  <span class="icon is-small"><i class="fas fa-tag"></i></span>
+                  {{ s.servico.categoria }}
+                  {% if s.servico.preco %}
+                  <span class="mx-1">·</span>
+                  <span class="icon is-small"><i class="fas fa-dollar-sign"></i></span>
+                  R$ {{ "%.2f"|format(s.servico.preco) }}
+                  {% endif %}
+                </p>
+              </div>
+
+              {# Prestador — com foto se disponível #}
+              <div class="box mb-3" style="padding:.9rem;">
+                <p class="helpnow-form-section-title">Prestador</p>
+                <div class="is-flex is-align-items-center mb-2" style="gap:.65rem;">
+                  {% if s.prestador.photo %}
+                    <img src="{{ s.prestador.photo }}"
+                         alt="{{ s.prestador.name }}"
+                         style="width:40px; height:40px; border-radius:50%;
+                                object-fit:cover; flex-shrink:0;"
+                         onerror="this.style.display='none';
+                                  this.nextElementSibling.style.display='flex';">
+                    <div style="display:none; width:40px; height:40px; border-radius:50%;
+                                background:linear-gradient(135deg,#3273dc,#1a50b5);
+                                color:#fff; font-weight:700; font-size:1rem; flex-shrink:0;
+                                align-items:center; justify-content:center;">
+                      {{ s.prestador.name[0].upper() }}
+                    </div>
+                  {% else %}
+                    <div style="width:40px; height:40px; border-radius:50%;
+                                background:linear-gradient(135deg,#3273dc,#1a50b5);
+                                color:#fff; font-weight:700; font-size:1rem; flex-shrink:0;
+                                display:flex; align-items:center; justify-content:center;">
+                      {{ s.prestador.name[0].upper() }}
+                    </div>
+                  {% endif %}
+                  <p class="has-text-weight-semibold">{{ s.prestador.name }}</p>
+                </div>
+                {% if s.prestador.phone %}
+                <p class="is-size-7 has-text-grey">
+                  <span class="icon is-small"><i class="fas fa-phone"></i></span>
+                  {{ s.prestador.phone }}
+                </p>
+                {% endif %}
+              </div>
+
+              {# Mensagem e endereço #}
+              <div class="box mb-3" style="padding:.9rem;">
+                <p class="helpnow-form-section-title">Sua solicitação</p>
+                {% if s.mensagem %}
+                <p class="is-size-7 mb-2" style="color:#444; line-height:1.5;">
+                  {{ s.mensagem }}
+                </p>
+                {% endif %}
+                {% if s.endereco_texto %}
+                <p class="is-size-7 has-text-grey">
+                  <span class="icon is-small"><i class="fas fa-map-marker-alt"></i></span>
+                  {{ s.endereco_texto }}
+                </p>
+                {% endif %}
+              </div>
+
+              <p class="is-size-7 has-text-grey">
+                <span class="icon is-small"><i class="fas fa-clock"></i></span>
+                Solicitado em {{ s.created_at.strftime('%d/%m/%Y às %H:%M') }}
+              </p>
+
+            </section>
+
+            <footer class="modal-card-foot">
+              <button class="button is-light is-rounded"
+                      onclick="fecharModal('modal-cli-{{ s.id }}')">
+                Fechar
+              </button>
+            </footer>
+
+          </div>
+        </div>
+        {# ── fim modal ── #}
+
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="has-text-grey is-size-7">Nenhum serviço no histórico ainda.</p>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Estrelas interativas no formulário de conclusão
+  document.querySelectorAll('.helpnow-stars').forEach(container => {
+    const labels = container.querySelectorAll('.helpnow-star-label');
+    const radios = container.querySelectorAll('input[type=radio]');
+    const icons  = container.querySelectorAll('.star-icon i');
+
+    function paint(upTo) {
+      icons.forEach((ico, idx) => {
+        ico.className = idx < upTo ? 'fas fa-star' : 'far fa-star';
+      });
+    }
+
+    labels.forEach((lbl, idx) => {
+      lbl.addEventListener('mouseenter', () => paint(idx + 1));
+      lbl.addEventListener('mouseleave', () => {
+        const checked = [...radios].findIndex(r => r.checked);
+        paint(checked >= 0 ? checked + 1 : 0);
+      });
+      lbl.addEventListener('click', () => paint(idx + 1));
+    });
+  });
+});
+
+// Funções globais para abrir/fechar modais pelo ID
+function abrirModal(id) {
+  document.getElementById(id).classList.add('is-active');
+  document.documentElement.classList.add('is-clipped');
+}
+function fecharModal(id) {
+  document.getElementById(id).classList.remove('is-active');
+  document.documentElement.classList.remove('is-clipped');
+}
+// Fecha qualquer modal aberto com a tecla Esc
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal.is-active').forEach(m => {
+      m.classList.remove('is-active');
+      document.documentElement.classList.remove('is-clipped');
+    });
+  }
+});
+</script>
+
+<style>
+.helpnow-form-section-title {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: #aaa; margin-bottom: .4rem;
+}
+</style>
+
+{% endblock %}

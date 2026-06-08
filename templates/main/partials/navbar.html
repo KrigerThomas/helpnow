@@ -1,0 +1,89 @@
+<nav class="navbar helpnow-navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="{{ url_for('main.index') }}">
+      <span class="helpnow-logo">
+        <span class="logo-help">Help</span><span class="logo-now">NOW</span>
+      </span>
+    </a>
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="helpnowNavbar">
+      <span aria-hidden="true"></span><span aria-hidden="true"></span>
+      <span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </a>
+  </div>
+
+  <div id="helpnowNavbar" class="navbar-menu">
+    <div class="navbar-start">
+      <a class="navbar-item" href="{{ url_for('main.index') }}" style="gap:.4rem;">
+        <span class="icon"><i class="fas fa-home"></i></span>
+        <span>Início</span>
+      </a>
+
+      {# Buscar só para visitantes e clientes — prestador não solicita #}
+      {% if not current_user.is_authenticated or current_user.papel == 'cliente' %}
+      <a class="navbar-item" href="{{ url_for('main.buscar') }}" style="gap:.4rem;">
+        <span class="icon"><i class="fas fa-search"></i></span>
+        <span>Buscar Serviços</span>
+      </a>
+      {% endif %}
+
+      {# Novo Serviço só para prestadores #}
+      {% if current_user.is_authenticated and current_user.papel == 'prestador' %}
+      <a class="navbar-item" href="{{ url_for('main.novo_servico') }}" style="gap:.4rem;">
+        <span class="icon"><i class="fas fa-plus-circle"></i></span>
+        <span>Novo Serviço</span>
+      </a>
+      {% endif %}
+
+      <a class="navbar-item" href="{{ url_for('main.contato') }}" style="gap:.4rem;">
+        <span class="icon"><i class="fas fa-envelope"></i></span>
+        <span>Contato</span>
+      </a>
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="buttons">
+          {% if current_user.is_authenticated %}
+            {# Dropdown com avatar e link para perfil #}
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link" style="background:none; border:none; gap:.4rem;">
+                {% if current_user.photo %}
+                  <img src="{{ current_user.photo }}" alt=""
+                       style="width:28px; height:28px; border-radius:50%; object-fit:cover; margin-right:6px;"
+                       onerror="this.style.display='none';
+                                this.nextElementSibling.style.display='inline-flex';">
+                  <span class="icon" style="display:none;">
+                    <i class="fas fa-user-circle"></i>
+                  </span>
+                {% else %}
+                  <span class="icon"><i class="fas fa-user-circle"></i></span>
+                {% endif %}
+                <strong>{{ current_user.name.split()[0] }}</strong>
+                <span class="tag is-rounded is-small is-light
+                  {% if current_user.papel == 'prestador' %}is-warning{% else %}is-link{% endif %}">
+                  {{ current_user.papel | capitalize }}
+                </span>
+              </a>
+              <div class="navbar-dropdown is-right">
+                <a class="navbar-item" href="{{ url_for('perfil.index') }}" style="gap:.4rem;">
+                  <span class="icon"><i class="fas fa-user-edit"></i></span>
+                  <span>Meu Perfil</span>
+                </a>
+                <hr class="navbar-divider">
+                <a class="navbar-item has-text-danger" href="{{ url_for('auth.logout') }}" style="gap:.4rem;">
+                  <span class="icon"><i class="fas fa-sign-out-alt"></i></span>
+                  <span>Sair</span>
+                </a>
+              </div>
+            </div>
+          {% else %}
+            <a class="button helpnow-btn-primary is-rounded" href="{{ url_for('auth.cadastro') }}">
+              <strong>Cadastrar</strong>
+            </a>
+            <a class="button is-light is-rounded" href="{{ url_for('auth.login') }}">Entrar</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

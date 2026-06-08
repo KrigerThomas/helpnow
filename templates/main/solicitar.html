@@ -1,0 +1,84 @@
+{% extends 'main/base.html' %}
+{% block title %}HelpNOW – Solicitar Serviço{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-7-desktop">
+
+        <nav class="breadcrumb mb-4">
+          <ul>
+            <li><a href="{{ url_for('main.index') }}">Painel</a></li>
+            <li><a href="{{ url_for('main.buscar') }}">Buscar</a></li>
+            <li class="is-active"><a>Solicitar</a></li>
+          </ul>
+        </nav>
+
+        {# Card do serviço que está sendo solicitado #}
+        <div class="box mb-4" style="border-left: 4px solid #3273dc;">
+          <div class="columns is-vcentered">
+            <div class="column">
+              <p class="tag is-link is-light is-rounded mb-2">{{ servico.categoria }}</p>
+              <h2 class="title is-5 mb-1">{{ servico.titulo }}</h2>
+              <p class="is-size-7 has-text-grey">
+                <span class="icon"><i class="fas fa-user"></i></span>
+                {{ servico.prestador.name }}
+                {% if servico.localidade %}
+                <span class="mx-1">·</span>
+                <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+                {{ servico.localidade }}
+                {% endif %}
+              </p>
+            </div>
+            {% if servico.preco %}
+            <div class="column is-narrow">
+              <p class="heading has-text-grey">Preço fixo</p>
+              <p class="title is-4 has-text-success">R$ {{ "%.2f"|format(servico.preco) }}</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <h1 class="title is-5 mb-4">
+          <span class="icon has-text-link"><i class="fas fa-paper-plane"></i></span>
+          Enviar solicitação
+        </h1>
+
+        <div class="box">
+          <form method="POST" action="{{ url_for('main.solicitar', servico_id=servico.id) }}">
+            {{ form.csrf_token }}
+
+            <div class="field">
+              <label class="label">{{ form.mensagem.label }}</label>
+              <div class="control">
+                {{ form.mensagem(class="textarea" + (" is-danger" if form.mensagem.errors else ""), rows=4,
+                   placeholder="Descreva o problema, o que precisa ser feito, dimensões do ambiente etc.") }}
+              </div>
+              {% for e in form.mensagem.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+            </div>
+
+            <div class="field">
+              <label class="label">{{ form.endereco_texto.label }}</label>
+              <div class="control has-icons-left">
+                {{ form.endereco_texto(class="input" + (" is-danger" if form.endereco_texto.errors else ""),
+                   placeholder="Rua, número, bairro – onde o serviço será prestado") }}
+                <span class="icon is-left"><i class="fas fa-map-marker-alt"></i></span>
+              </div>
+              {% for e in form.endereco_texto.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+            </div>
+
+            <div class="field is-grouped mt-4">
+              {{ form.submit(class="button helpnow-btn-primary is-rounded") }}
+              <div class="control">
+                <a href="{{ url_for('main.buscar') }}" class="button is-light is-rounded">Voltar</a>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

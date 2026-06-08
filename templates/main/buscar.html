@@ -1,0 +1,238 @@
+{% extends 'main/base.html' %}
+{% block title %}HelpNOW – Buscar Profissionais{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+
+    <div class="mb-5">
+      <h1 class="title is-4 mb-1">
+        <span class="icon has-text-link"><i class="fas fa-search"></i></span>
+        Buscar Profissionais
+      </h1>
+      <p class="has-text-grey is-size-6">Encontre o serviço ideal na sua região.</p>
+    </div>
+
+    {# ── Filtros ── #}
+    <form method="GET" action="{{ url_for('main.buscar') }}" id="form-busca">
+      <div class="box mb-5">
+        <div class="columns is-vcentered">
+
+          {# Categoria #}
+          <div class="column">
+            <div class="field">
+              <label class="label is-small">Categoria</label>
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select name="categoria">
+                    <option value="">Todas as categorias</option>
+                    {% for cat in categorias %}
+                    <option {% if cat == categoria %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# Localidade #}
+          <div class="column">
+            <div class="field">
+              <label class="label is-small">
+                Localidade
+                <span id="geo-status" class="is-size-7 has-text-grey ml-2" style="font-weight:400;"></span>
+              </label>
+              <div class="field has-addons">
+                <div class="control is-expanded has-icons-left">
+                  <input class="input" type="text" name="localidade" id="input-localidade"
+                         placeholder="Cidade ou bairro" value="{{ localidade }}">
+                  <span class="icon is-left"><i class="fas fa-map-marker-alt"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# Buscar #}
+          <div class="column is-narrow">
+            <div class="field">
+              <label class="label is-small" aria-hidden="true"> </label>
+              <div class="control">
+                <button type="submit" class="button helpnow-btn-primary is-rounded">
+                  <span class="icon"><i class="fas fa-search"></i></span>
+                  <span>Buscar</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </form>
+
+    {# ── Resultados ── #}
+    {% if resultados %}
+      <p class="has-text-grey mb-4 is-size-7">
+        {{ resultados|length }} resultado(s)
+        {% if localidade %}em <strong>{{ localidade }}</strong>{% endif %}
+        {% if categoria %}· <strong>{{ categoria }}</strong>{% endif %}
+      </p>
+
+      <div class="columns is-multiline">
+        {% for s in resultados %}
+        <div class="column is-4-desktop is-6-tablet">
+          <div class="card hn-servico-card">
+
+            {# ── Cabeçalho do card: foto do prestador ── #}
+            <div class="card-content pb-3">
+              <div class="is-flex is-align-items-center mb-3" style="gap:.75rem;">
+
+                {# Avatar do prestador — foto real ou ícone fallback #}
+                <div class="hn-avatar" style="flex-shrink:0;">
+                  {% if s.prestador.photo %}
+                    <img src="{{ s.prestador.photo }}"
+                         alt="{{ s.prestador.name }}"
+                         class="hn-avatar-img"
+                         onerror="this.style.display='none';
+                                  this.nextElementSibling.style.display='flex';">
+                    <span class="hn-avatar-fallback" style="display:none;">
+                      {{ s.prestador.name[0].upper() }}
+                    </span>
+                  {% else %}
+                    <span class="hn-avatar-fallback">
+                      {{ s.prestador.name[0].upper() }}
+                    </span>
+                  {% endif %}
+                </div>
+
+                <div style="min-width:0; flex:1;">
+                  <p class="has-text-weight-semibold" style="font-size:.88rem; line-height:1.3;">
+                    {{ s.prestador.name }}
+                  </p>
+                  {% if s.prestador.addresses and s.prestador.endereco_principal %}
+                  <p class="is-size-7 has-text-grey" style="line-height:1.3;">
+                    <span class="icon is-small"><i class="fas fa-map-marker-alt"></i></span>
+                    {{ s.prestador.endereco_principal.district or '' }}
+                    {% if s.prestador.endereco_principal.city %}
+                      · {{ s.prestador.endereco_principal.city.name }}
+                    {% endif %}
+                  </p>
+                  {% endif %}
+                </div>
+
+                <span class="tag is-link is-light is-rounded" style="flex-shrink:0;">
+                  {{ s.categoria }}
+                </span>
+              </div>
+
+              {# Título e descrição do serviço #}
+              <p class="has-text-weight-bold mb-1" style="font-size:1rem;">{{ s.titulo }}</p>
+              <p class="is-size-7 mb-3" style="color:#555; line-height:1.5;">
+                {{ s.descricao | truncate(110) }}
+              </p>
+
+              {# Rodapé do card: preço + botão #}
+              <div class="is-flex is-align-items-center is-justify-content-space-between">
+                <div>
+                  {% if s.preco %}
+                  <div class="tags has-addons mb-0">
+                    <span class="tag is-dark">R$</span>
+                    <span class="tag is-success">{{ "%.2f"|format(s.preco) }}</span>
+                  </div>
+                  {% else %}
+                    <span class="is-size-7 has-text-grey">Preço a combinar</span>
+                  {% endif %}
+                </div>
+                <div>
+                  {% if current_user.is_authenticated and current_user.papel == 'cliente' %}
+                    <a href="{{ url_for('main.solicitar', servico_id=s.id) }}"
+                       class="button helpnow-btn-primary is-small is-rounded">
+                      <span class="icon"><i class="fas fa-paper-plane"></i></span>
+                      <span>Solicitar</span>
+                    </a>
+                  {% elif not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.login') }}"
+                       class="button is-link is-light is-small is-rounded">
+                      <span class="icon"><i class="fas fa-sign-in-alt"></i></span>
+                      <span>Login para solicitar</span>
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+    {% else %}
+      <div class="notification is-light helpnow-empty-state">
+        <span class="icon is-large has-text-grey-light"><i class="fas fa-user-slash fa-2x"></i></span>
+        <p class="mt-3 has-text-grey">
+          {% if categoria or localidade %}
+            Nenhum profissional encontrado
+            {% if categoria %} para <strong>{{ categoria }}</strong>{% endif %}
+            {% if localidade %} em <strong>{{ localidade }}</strong>{% endif %}.
+          {% else %}
+            Use os filtros acima para encontrar profissionais na sua região.
+          {% endif %}
+        </p>
+        {% if categoria or localidade %}
+        <a href="{{ url_for('main.buscar') }}" class="button is-light is-rounded mt-3">
+          <span class="icon"><i class="fas fa-times"></i></span>
+          <span>Limpar filtros</span>
+        </a>
+        {% endif %}
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{# ────────────────────────────────────────────────────────────────────────────
+   CSS local — estilos dos cards e avatar (complementam o helpnow.css)
+   ─────────────────────────────────────────────────────────────────────────── #}
+{% block css %}
+<style>
+/* Card do serviço */
+.hn-servico-card {
+  transition: transform .2s ease, box-shadow .2s ease;
+  height: 100%;
+}
+.hn-servico-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0,0,0,.13);
+}
+
+/* Avatar circular do prestador */
+.hn-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  background-color: #e8eaf6;
+  flex-shrink: 0;
+}
+.hn-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.hn-avatar-fallback {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3273dc, #1a50b5);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>
+{% endblock %}
+
+{% endblock %}

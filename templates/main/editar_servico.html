@@ -1,0 +1,86 @@
+{% extends 'main/base.html' %}
+{% block title %}HelpNOW – Editar Serviço{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-7-desktop">
+
+        <nav class="breadcrumb mb-4" aria-label="breadcrumbs">
+          <ul>
+            <li><a href="{{ url_for('main.index') }}">Painel</a></li>
+            <li class="is-active"><a>Editar Serviço</a></li>
+          </ul>
+        </nav>
+
+        {# Card de identificação do serviço sendo editado #}
+        <div class="notification is-warning is-light mb-4" style="border-radius:12px;">
+          <span class="icon"><i class="fas fa-edit"></i></span>
+          Editando: <strong>{{ servico.titulo }}</strong>
+        </div>
+
+        <div class="box">
+          <form method="POST" action="{{ url_for('main.editar_servico', id=servico.id) }}">
+            {{ form.csrf_token }}
+
+            <div class="field">
+              <label class="label">{{ form.titulo.label }}</label>
+              <div class="control">
+                {{ form.titulo(class="input" + (" is-danger" if form.titulo.errors else "")) }}
+              </div>
+              {% for e in form.titulo.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+            </div>
+
+            <div class="columns">
+              <div class="column">
+                <div class="field">
+                  <label class="label">{{ form.categoria.label }}</label>
+                  <div class="control">
+                    <div class="select is-fullwidth">{{ form.categoria() }}</div>
+                  </div>
+                  {% for e in form.categoria.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+                </div>
+              </div>
+              <div class="column">
+                <div class="field">
+                  <label class="label">{{ form.preco.label }}</label>
+                  <div class="control has-icons-left">
+                    {{ form.preco(class="input" + (" is-danger" if form.preco.errors else "")) }}
+                    <span class="icon is-left"><i class="fas fa-dollar-sign"></i></span>
+                  </div>
+                  {% for e in form.preco.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">{{ form.descricao.label }}</label>
+              <div class="control">
+                {{ form.descricao(class="textarea" + (" is-danger" if form.descricao.errors else ""), rows=4) }}
+              </div>
+              {% for e in form.descricao.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+            </div>
+
+            <div class="field">
+              <label class="label">{{ form.localidade.label }}</label>
+              <div class="control has-icons-left">
+                {{ form.localidade(class="input", placeholder="Ex: Vila Velha, ES") }}
+                <span class="icon is-left"><i class="fas fa-map-marker-alt"></i></span>
+              </div>
+            </div>
+
+            <div class="field is-grouped mt-4">
+              {{ form.submit(class="button helpnow-btn-prestador is-rounded") }}
+              <div class="control">
+                <a href="{{ url_for('main.index') }}" class="button is-light is-rounded">Cancelar</a>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

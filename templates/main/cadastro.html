@@ -1,0 +1,255 @@
+{% extends 'main/base.html' %}
+{% block title %}HelpNOW – Criar conta{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-6-desktop is-8-tablet">
+
+        <div class="has-text-centered mb-5">
+          <p class="helpnow-logo" style="font-size:2rem;">
+            <span class="logo-help">Help</span><span class="logo-now">NOW</span>
+          </p>
+          <p class="has-text-grey mt-1">Crie sua conta gratuitamente</p>
+        </div>
+
+        <div class="box">
+          <form method="POST" action="{{ url_for('auth.cadastro') }}">
+            {{ form.csrf_token }}
+
+            {# ── Tipo de conta ── #}
+            <div class="field mb-4">
+              <label class="label">{{ form.papel.label }}</label>
+              <div class="columns">
+                <div class="column">
+                  <label class="helpnow-role-card" id="card-cliente">
+                    <input type="radio" name="papel" value="cliente" {% if form.papel.data != "prestador" %}checked{% endif %} style="display:none">
+                    <span class="icon is-large has-text-link"><i class="fas fa-user fa-2x"></i></span>
+                    <p class="has-text-weight-semibold mt-2">Cliente</p>
+                    <p class="is-size-7 has-text-grey">Preciso de serviços</p>
+                  </label>
+                </div>
+                <div class="column">
+                  <label class="helpnow-role-card" id="card-prestador">
+                    <input type="radio" name="papel" value="prestador" {% if form.papel.data == "prestador" %}checked{% endif %} style="display:none">
+                    <span class="icon is-large has-text-warning"><i class="fas fa-hard-hat fa-2x"></i></span>
+                    <p class="has-text-weight-semibold mt-2">Prestador</p>
+                    <p class="is-size-7 has-text-grey">Ofereço serviços</p>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {# ── Dados básicos ── #}
+            <p class="helpnow-form-section-title">Dados pessoais</p>
+
+            <div class="columns">
+              <div class="column">
+                <div class="field">
+                  <label class="label">{{ form.name.label }}</label>
+                  <div class="control has-icons-left">
+                    {{ form.name(class="input"+(" is-danger" if form.name.errors else ""), placeholder="Nome completo") }}
+                    <span class="icon is-left"><i class="fas fa-user"></i></span>
+                  </div>
+                  {% for e in form.name.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+                </div>
+              </div>
+              <div class="column">
+                <div class="field">
+                  <label class="label">{{ form.phone.label }}</label>
+                  <div class="control has-icons-left">
+                    {{ form.phone(class="input"+(" is-danger" if form.phone.errors else ""), placeholder="(27) 99999-0000") }}
+                    <span class="icon is-left"><i class="fas fa-phone"></i></span>
+                  </div>
+                  {% for e in form.phone.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">{{ form.email.label }}</label>
+              <div class="control has-icons-left">
+                {{ form.email(class="input"+(" is-danger" if form.email.errors else ""), placeholder="seu@email.com") }}
+                <span class="icon is-left"><i class="fas fa-envelope"></i></span>
+              </div>
+              {% for e in form.email.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+            </div>
+
+            {# ── Seção extra — aparece só para Prestador via JS ── #}
+            <div id="secao-prestador" style="display:none;">
+              <p class="helpnow-form-section-title">
+                Dados profissionais
+                <span class="tag is-warning is-light is-rounded ml-2">Obrigatório para prestadores</span>
+              </p>
+
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <label class="label">{{ form.cpf.label }}</label>
+                    <div class="control has-icons-left">
+                      {{ form.cpf(class="input"+(" is-danger" if form.cpf.errors else ""), placeholder="000.000.000-00") }}
+                      <span class="icon is-left"><i class="fas fa-id-card"></i></span>
+                    </div>
+                    {% for e in form.cpf.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <label class="label">{{ form.photo.label }}</label>
+                    <div class="control has-icons-left">
+                      {{ form.photo(class="input"+(" is-danger" if form.photo.errors else ""), placeholder="https://...") }}
+                      <span class="icon is-left"><i class="fas fa-image"></i></span>
+                    </div>
+                    <p class="help">Cole o link direto de uma foto — use <strong>postimages.org</strong> (gratuito, sem conta)</p>
+                    {% for e in form.photo.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              <p class="helpnow-form-section-title">Endereço de atendimento</p>
+
+              <div class="columns">
+                <div class="column is-8">
+                  <div class="field">
+                    <label class="label">{{ form.road.label }}</label>
+                    <div class="control">
+                      {{ form.road(class="input"+(" is-danger" if form.road.errors else ""), placeholder="Rua, Av., etc.") }}
+                    </div>
+                    {% for e in form.road.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+                  </div>
+                </div>
+                <div class="column is-4">
+                  <div class="field">
+                    <label class="label">{{ form.number.label }}</label>
+                    <div class="control">
+                      {{ form.number(class="input", placeholder="123") }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <label class="label">{{ form.district.label }}</label>
+                    <div class="control">
+                      {{ form.district(class="input", placeholder="Bairro") }}
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <label class="label">{{ form.zipcode.label }}</label>
+                    <div class="control">
+                      {{ form.zipcode(class="input", placeholder="00000-000") }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="columns">
+                <div class="column is-8">
+                  <div class="field">
+                    <label class="label">{{ form.city_name.label }}</label>
+                    <div class="control">
+                      {{ form.city_name(class="input"+(" is-danger" if form.city_name.errors else ""), placeholder="Vila Velha") }}
+                    </div>
+                    {% for e in form.city_name.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+                  </div>
+                </div>
+                <div class="column is-4">
+                  <div class="field">
+                    <label class="label">{{ form.state.label }}</label>
+                    <div class="control">
+                      <div class="select is-fullwidth">
+                        {{ form.state(class=""+(" is-danger" if form.state.errors else "")) }}
+                      </div>
+                    </div>
+                    {% for e in form.state.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            {# ── fim seção prestador ── #}
+
+            <p class="helpnow-form-section-title">Segurança</p>
+
+            <div class="columns">
+              <div class="column">
+                <div class="field">
+                  <label class="label">{{ form.password.label }}</label>
+                  <div class="control has-icons-left">
+                    {{ form.password(class="input"+(" is-danger" if form.password.errors else ""), placeholder="Mínimo 6 caracteres") }}
+                    <span class="icon is-left"><i class="fas fa-lock"></i></span>
+                  </div>
+                  {% for e in form.password.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+                </div>
+              </div>
+              <div class="column">
+                <div class="field">
+                  <label class="label">{{ form.confirm.label }}</label>
+                  <div class="control has-icons-left">
+                    {{ form.confirm(class="input"+(" is-danger" if form.confirm.errors else ""), placeholder="Repita a senha") }}
+                    <span class="icon is-left"><i class="fas fa-lock"></i></span>
+                  </div>
+                  {% for e in form.confirm.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <div class="field mt-4">
+              {{ form.submit(class="button helpnow-btn-primary is-fullwidth is-rounded") }}
+            </div>
+          </form>
+        </div>
+
+        <p class="has-text-centered has-text-grey">
+          Já tem conta?
+          <a href="{{ url_for('auth.login') }}" class="has-text-link has-text-weight-semibold">Entrar</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.helpnow-role-card {
+  display:flex; flex-direction:column; align-items:center;
+  padding:1.25rem; border:2px solid #e0e4ef; border-radius:12px;
+  cursor:pointer; transition:border-color .2s, background .2s; background:#fafafa;
+}
+.helpnow-role-card:hover   { border-color:#3273dc; background:#f0f5ff; }
+.helpnow-role-card.selected { border-color:#3273dc; background:#ebf3ff; }
+.helpnow-form-section-title {
+  font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: #888; margin: 1.25rem 0 0.75rem;
+  border-bottom: 1px solid #eee; padding-bottom: 0.4rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const radios  = document.querySelectorAll('input[name="papel"]');
+  const cards   = document.querySelectorAll('.helpnow-role-card');
+  const secao   = document.getElementById('secao-prestador');
+
+  function update() {
+    const isPrestador = [...radios].some(r => r.value === 'prestador' && r.checked);
+    secao.style.display = isPrestador ? '' : 'none';
+    radios.forEach(r => r.closest('.helpnow-role-card').classList.toggle('selected', r.checked));
+  }
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      card.querySelector('input[type=radio]').checked = true;
+      update();
+    });
+  });
+
+  // Mantém seção visível se form voltou com erro e papel=prestador
+  update();
+});
+</script>
+{% endblock %}

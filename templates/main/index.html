@@ -1,0 +1,160 @@
+{% extends 'main/base.html' %}
+{% block title %}HelpNOW – Serviços domésticos perto de você{% endblock %}
+
+{% block content %}
+
+{# ── HERO PRINCIPAL ── #}
+<section class="hero helpnow-hero-landing is-fullheight-with-navbar">
+  <div class="hero-body">
+    <div class="container">
+
+      {#
+        Layout centralizado: coluna única com has-text-centered.
+        Resolve o desalinhamento do layout de duas colunas anterior,
+        onde o texto ficava preso na metade esquerda da tela.
+      #}
+      <div class="has-text-centered">
+
+        {# Título maior e centralizado #}
+        <h1 class="helpnow-landing-title mb-4" style="font-size: clamp(2.4rem, 5vw, 3.8rem);">
+          O profissional que você precisa,
+          <br>
+          <span class="helpnow-highlight">agora.</span>
+        </h1>
+
+        <p class="has-text-white mb-6"
+           style="opacity:.88; font-size: clamp(1rem, 2vw, 1.25rem);
+                  max-width: 620px; margin-left: auto; margin-right: auto; line-height: 1.6;">
+          Conectamos clientes a prestadores de serviços domésticos de forma
+          rápida, simples e confiável. Eletricistas, diaristas, técnicos e muito mais.
+        </p>
+
+        <div class="buttons is-centered mb-6">
+          <a href="{{ url_for('main.buscar') }}"
+             class="button is-white is-rounded is-medium helpnow-cta-btn">
+            <span class="icon"><i class="fas fa-search"></i></span>
+            <strong>Preciso de um serviço</strong>
+          </a>
+          <a href="{{ url_for('auth.cadastro') }}"
+             class="button is-outlined is-white is-rounded is-medium">
+            <span class="icon"><i class="fas fa-hard-hat"></i></span>
+            <span>Sou prestador</span>
+          </a>
+        </div>
+
+        {# Cards decorativos em linha, centralizados #}
+        <div class="is-flex is-justify-content-center is-flex-wrap-wrap is-hidden-mobile"
+             style="gap: 1rem;">
+          <div class="helpnow-floating-card">
+            <span class="icon has-text-warning"><i class="fas fa-bolt fa-2x"></i></span>
+            <div>
+              <p class="has-text-weight-bold">Eletricista</p>
+              <p class="is-size-7 has-text-grey">Disponível agora</p>
+            </div>
+            <span class="tag is-success is-rounded">✓ Online</span>
+          </div>
+          <div class="helpnow-floating-card">
+            <span class="icon has-text-info"><i class="fas fa-faucet fa-2x"></i></span>
+            <div>
+              <p class="has-text-weight-bold">Encanador</p>
+              <p class="is-size-7 has-text-grey">Vila Velha, ES</p>
+            </div>
+            <span class="tag is-warning is-rounded">★ 4.9</span>
+          </div>
+          <div class="helpnow-floating-card">
+            <span class="icon has-text-success"><i class="fas fa-broom fa-2x"></i></span>
+            <div>
+              <p class="has-text-weight-bold">Diarista</p>
+              <p class="is-size-7 has-text-grey">Disponível amanhã</p>
+            </div>
+            <span class="tag is-success is-rounded">✓ Online</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ── COMO FUNCIONA ── #}
+<section class="section helpnow-section-light">
+  <div class="container">
+    <div class="has-text-centered mb-6">
+      <h2 class="title is-3">Como o HelpNOW funciona?</h2>
+      <p class="has-text-grey is-size-6">Simples, rápido e sem complicação.</p>
+    </div>
+    <div class="columns is-centered">
+      {% for num, titulo, desc in [
+          ('1', 'Cadastre-se',        'Crie sua conta como cliente ou prestador em menos de 1 minuto.'),
+          ('2', 'Encontre ou ofereça','Busque profissionais na sua região ou cadastre seus serviços.'),
+          ('3', 'Resolva agora',      'Solicite, aceite e pronto! O serviço é agendado de forma direta.'),
+      ] %}
+      <div class="column is-3 has-text-centered">
+        <div class="helpnow-step-circle">
+          <span class="has-text-white has-text-weight-bold is-size-4">{{ num }}</span>
+        </div>
+        <h3 class="title is-5 mt-4">{{ titulo }}</h3>
+        <p class="has-text-grey is-size-6">{{ desc }}</p>
+      </div>
+      {% if not loop.last %}
+      <div class="column is-1 is-hidden-mobile"
+           style="display:flex; align-items:center; justify-content:center;">
+        <span class="icon is-large has-text-grey-light">
+          <i class="fas fa-arrow-right fa-2x"></i>
+        </span>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ── CATEGORIAS ── #}
+<section class="section">
+  <div class="container">
+    <div class="has-text-centered mb-5">
+      <h2 class="title is-3">Categorias de serviço</h2>
+    </div>
+    <div class="columns is-multiline is-centered">
+      {% for icon, nome, css in [
+          ('fas fa-bolt',         'Elétrica',    'cat-eletrica'),
+          ('fas fa-faucet',       'Hidráulica',  'cat-hidraulica'),
+          ('fas fa-broom',        'Limpeza',     'cat-limpeza'),
+          ('fas fa-laptop',       'Informática', 'cat-informatica'),
+          ('fas fa-paint-roller', 'Pintura',     'cat-pintura'),
+          ('fas fa-tools',        'Outros',      'cat-outros'),
+      ] %}
+      <div class="column is-2-desktop is-4-tablet is-6-mobile">
+        <a href="{{ url_for('main.buscar') }}?categoria={{ nome }}"
+           class="box has-text-centered helpnow-categoria-card {{ css }}">
+          <span class="icon is-large mb-2"><i class="{{ icon }} fa-2x"></i></span>
+          <p class="is-size-6 has-text-weight-semibold mt-2">{{ nome }}</p>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ── CTA FINAL ── #}
+<section class="section helpnow-cta-section">
+  <div class="container has-text-centered">
+    <h2 class="title is-3 has-text-white">Pronto para começar?</h2>
+    <p class="has-text-white mb-5" style="opacity:.9;">
+      Cadastre-se gratuitamente e encontre o profissional ideal
+      ou comece a atender clientes hoje.
+    </p>
+    <div class="buttons is-centered">
+      <a href="{{ url_for('auth.cadastro') }}"
+         class="button is-white is-rounded is-large">
+        <strong>Criar minha conta</strong>
+      </a>
+      <a href="{{ url_for('auth.login') }}"
+         class="button is-outlined is-white is-rounded is-large">
+        Já tenho conta
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

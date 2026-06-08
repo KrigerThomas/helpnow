@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  {% block head %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}HelpNOW{% endblock %}</title>
+  {# Bulma 0.9.4 — versão estável sem dark mode automático #}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/helpnow.css') }}">
+  {% block css %}{% endblock %}
+  {% endblock %}
+</head>
+<body class="helpnow-body">
+
+  <header>
+    {% block navbar %}{% include 'main/partials/navbar.html' %}{% endblock %}
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+      {% for category, message in messages %}
+      <div class="notification is-{{ category if category in ('success','danger','warning','info','primary','link') else 'info' }} is-light">
+        <button class="delete"></button>
+        <span class="icon">
+          {% if category == 'success' %}<i class="fas fa-check-circle"></i>
+          {% elif category == 'danger'  %}<i class="fas fa-exclamation-circle"></i>
+          {% elif category == 'warning' %}<i class="fas fa-exclamation-triangle"></i>
+          {% else %}<i class="fas fa-info-circle"></i>{% endif %}
+        </span>
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% endwith %}
+
+  <main class="helpnow-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer helpnow-footer">
+    <div class="content has-text-centered">
+      {% block footer %}{% include 'main/partials/footer.html' %}{% endblock %}
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.notification .delete').forEach(btn => {
+        btn.addEventListener('click', () => btn.closest('.notification').remove());
+      });
+      document.querySelectorAll('.navbar-burger').forEach(el => {
+        el.addEventListener('click', () => {
+          el.classList.toggle('is-active');
+          document.getElementById(el.dataset.target).classList.toggle('is-active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

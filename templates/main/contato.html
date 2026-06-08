@@ -1,0 +1,71 @@
+{% extends 'main/base.html' %}
+{% block title %}HelpNOW – Contato{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-6-desktop is-8-tablet">
+
+        <div class="has-text-centered mb-5">
+          <h1 class="title is-3">Entre em contato</h1>
+          <p class="has-text-grey">Dúvidas, sugestões ou problemas? Fale com a gente.</p>
+        </div>
+
+        <div class="box">
+          <form method="POST" action="{{ url_for('main.contato') }}">
+            {{ form.csrf_token }}
+
+            <div class="field">
+              <label class="label">{{ form.nome.label }}</label>
+              <div class="control has-icons-left">
+                {{ form.nome(class="input" + (" is-danger" if form.nome.errors else ""), placeholder="Seu nome") }}
+                <span class="icon is-left"><i class="fas fa-user"></i></span>
+              </div>
+              {% for e in form.nome.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+            </div>
+
+            <div class="field">
+              <label class="label">{{ form.email.label }}</label>
+              <div class="control has-icons-left">
+                {{ form.email(class="input" + (" is-danger" if form.email.errors else ""), placeholder="seu@email.com") }}
+                <span class="icon is-left"><i class="fas fa-envelope"></i></span>
+              </div>
+              {% for e in form.email.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+            </div>
+
+            <div class="field">
+              <label class="label">{{ form.mensagem.label }}</label>
+              <div class="control">
+                {{ form.mensagem(class="textarea" + (" is-danger" if form.mensagem.errors else ""), rows=5,
+                   placeholder="Escreva sua mensagem aqui...") }}
+              </div>
+              {% for e in form.mensagem.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
+            </div>
+
+            <div class="field mt-4">
+              {{ form.submit(class="button helpnow-btn-primary is-fullwidth is-rounded") }}
+            </div>
+          </form>
+        </div>
+
+        <div class="columns is-centered mt-5">
+          <div class="column is-4 has-text-centered">
+            <span class="icon is-large has-text-link"><i class="fas fa-envelope fa-2x"></i></span>
+            <p class="is-size-7 has-text-grey mt-2">contato@helpnow.com.br</p>
+          </div>
+          <div class="column is-4 has-text-centered">
+            <span class="icon is-large has-text-success"><i class="fas fa-phone fa-2x"></i></span>
+            <p class="is-size-7 has-text-grey mt-2">(27) 99999-0000</p>
+          </div>
+          <div class="column is-4 has-text-centered">
+            <span class="icon is-large has-text-warning"><i class="fas fa-map-marker-alt fa-2x"></i></span>
+            <p class="is-size-7 has-text-grey mt-2">Vila Velha, ES</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

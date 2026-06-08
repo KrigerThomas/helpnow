@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=70.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "helpnow"
+version = "0.1.0"
+description = "HelpNOW – Plataforma de serviços domésticos."
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Antony Novais, Heitor Rodrigues, Thomás Kriger"}
+]
+dependencies = [
+    "Flask",
+    "python-dotenv",
+    "flask-wtf",
+    "email-validator",
+    "flask-sqlalchemy",
+    "flask-admin",
+    "flask-login",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ipython",
+    "flask-shell-ipython",
+    "black",
+    "flake8",
+    "flask-debugtoolbar >= 0.15",
+    "invoke",
+]
+test = [
+    "pytest >= 8.3",
+    "pytest-cov >= 5.0",
+    "pytest-flask",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+namespaces = true
+exclude = ["tests*", "docs*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.html", "*.css", "*.js", "*.json", "*.png", "*.jpg"]
+"views" = ["templates/*", "static/*"]
