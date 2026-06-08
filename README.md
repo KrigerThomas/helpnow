@@ -1,21 +1,26 @@
+<div align="center">
+
 # HelpNOW 🔧
 
-> Plataforma web para solicitação rápida de serviços domésticos.
+**Plataforma web para solicitação rápida de serviços domésticos**
 
-Conecta **clientes** que precisam de serviços (elétrica, hidráulica, limpeza, TI, pintura) a **prestadores autônomos** cadastrados, simplificando a contratação sem depender de indicações informais.
+Conecta clientes que precisam de serviços (elétrica, hidráulica, limpeza, TI, pintura) a prestadores autônomos, simplificando a contratação sem depender de indicações informais.
+
+[![Testes](https://github.com/KrigerThomas/helpnow/actions/workflows/tests.yml/badge.svg)](https://github.com/KrigerThomas/helpnow/actions/workflows/tests.yml)
+[![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.x-black?logo=flask)](https://flask.palletsprojects.com/)
+[![Licença](https://img.shields.io/badge/Licença-MIT-green)](LICENSE)
 
 Projeto desenvolvido para a disciplina de **Desenvolvimento Web — UVV**  
 **Grupo:** Antony Novais · Heitor Rodrigues · Thomás Kriger
 
+</div>
+
 ---
 
-## Demonstração
+## Capturas de tela
 
-| Tela inicial (cliente) | Busca de profissionais | Painel do prestador |
-|---|---|---|
-| ![landing](er_diagram.png) | *(busca por categoria/localidade)* | *(painel de solicitações)* |
-
-> 💡 Substitua as células acima por capturas de tela reais do projeto!
+> Adicione prints do projeto aqui! Sugestão: arraste imagens direto para o README no GitHub.
 
 ---
 
@@ -24,7 +29,7 @@ Projeto desenvolvido para a disciplina de **Desenvolvimento Web — UVV**
 - Cadastro de **clientes** e **prestadores** com papéis distintos
 - Prestadores cadastram serviços com categoria, descrição, preço e localidade
 - Clientes buscam profissionais por **categoria** e/ou **localidade**
-- Envio de solicitações de serviço com mensagem e endereço
+- Envio de solicitações com mensagem e endereço
 - Prestadores **aceitam ou recusam** solicitações recebidas
 - Clientes marcam serviços como **concluídos** e deixam uma **avaliação (1–5)**
 - Edição de perfil para ambos os tipos de usuário
@@ -60,8 +65,9 @@ Projeto desenvolvido para a disciplina de **Desenvolvimento Web — UVV**
 ### 1. Clone e crie o ambiente virtual
 
 ```bash
-git clone https://github.com/SEU_USUARIO/helpnow.git
+git clone https://github.com/KrigerThomas/helpnow.git
 cd helpnow
+
 python -m venv venv
 
 # Linux / macOS
@@ -77,7 +83,7 @@ venv\Scripts\Activate.ps1
 # Copie o arquivo de exemplo
 cp .env.example .env.dev
 
-# Abra .env.dev e preencha as variáveis (SECRET_KEY no mínimo)
+# Abra .env.dev e preencha ao menos a SECRET_KEY
 ```
 
 > Gere uma SECRET_KEY segura:
@@ -132,12 +138,7 @@ invoke test
 # ou: pytest -v
 ```
 
-Os testes cobrem:
-- Infraestrutura (criação do app, modo de teste)
-- Rotas públicas (200 OK e HTML válido)
-- Conteúdo da landing page
-- Formulários de contato, login e cadastro
-- Proteção de rotas autenticadas (redirect 302)
+Os testes cobrem rotas públicas, formulários, autenticação e proteção de rotas.
 
 ---
 
@@ -153,32 +154,10 @@ helpnow/
 ├── er_diagram.png            # Diagrama do banco de dados
 │
 ├── helpnow/
-│   ├── ext/                  # Extensões Flask
-│   │   ├── config/           # Carregamento de configuração e .env
-│   │   ├── db/               # Inicialização do SQLAlchemy
-│   │   ├── login/            # Flask-Login
-│   │   ├── wtf/              # Flask-WTF (CSRF)
-│   │   ├── cli/              # Comandos flask (create-db, seed-dev)
-│   │   └── debugtoolbar/     # Debug toolbar (dev)
-│   │
-│   ├── models/               # Modelos SQLAlchemy
-│   │   ├── user.py           # Usuário + endereços
-│   │   ├── servico.py        # Serviço ofertado
-│   │   ├── solicitacao.py    # Solicitação de serviço
-│   │   ├── role.py           # Papel (Cliente / Prestador)
-│   │   ├── role_user.py      # Associação usuário↔papel
-│   │   └── location.py       # Cidade e endereço
-│   │
-│   ├── views/                # Blueprints Flask
-│   │   ├── main.py           # Rotas principais (busca, contato, solicitações)
-│   │   ├── auth.py           # Login, cadastro, logout
-│   │   └── perfil.py         # Edição de perfil
-│   │
-│   └── forms/                # Formulários WTForms
-│       ├── auth.py           # Login e cadastro
-│       ├── perfil.py         # Edição de perfil
-│       ├── servico.py        # Cadastro de serviço
-│       └── main.py           # Contato e solicitação
+│   ├── ext/                  # Extensões Flask (db, login, config, cli…)
+│   ├── models/               # Modelos SQLAlchemy (User, Servico, Solicitacao…)
+│   ├── views/                # Blueprints e rotas (main, auth, perfil)
+│   └── forms/                # Formulários WTForms (auth, servico, perfil…)
 │
 ├── templates/main/           # Templates Jinja2
 ├── static/css/               # CSS customizado (Bulma base)
@@ -189,18 +168,13 @@ helpnow/
 
 ## Variáveis de ambiente
 
-O projeto usa arquivos `.env.<ambiente>` carregados pelo Invoke:
+Copie `.env.example` para `.env.dev` e preencha — **nunca suba arquivos `.env` reais**.
 
 | Arquivo | Uso |
 |---|---|
 | `.env.dev` | Desenvolvimento local |
 | `.env.test` | Testes automatizados |
 | `.env.prod` | Produção |
-
-Variáveis principais: `SECRET_KEY`, `DATABASE_URL`, `FLASK_DEBUG`  
-Para e-mail (produção): `MAIL_SERVER`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`
-
-Copie `.env.example` e preencha — **nunca suba arquivos `.env` reais**.
 
 ---
 
