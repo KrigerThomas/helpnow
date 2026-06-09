@@ -126,6 +126,11 @@ def zip(c, name=None):
         ".vscode",
         "helpnow.egg-info",
         ".pytest_cache",
+        "LICENSE",
+        "README.md",
+        "gerar_er.py",
+        ".gitignore",
+        ".github",
     ]
 
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
