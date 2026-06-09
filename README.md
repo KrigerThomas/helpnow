@@ -82,24 +82,29 @@ Projeto desenvolvido para a disciplina de **Desenvolvimento Web — UVV**
 ### Pré-requisitos
 
 - Python 3.9 ou superior
-- pip
 
-### 1. Clone e crie o ambiente virtual
+### 1. Clone o repositório
 
 ```bash
 git clone https://github.com/KrigerThomas/helpnow.git
 cd helpnow
-
-python -m venv venv
-
-# Linux / macOS
-source venv/bin/activate
-
-# Windows (PowerShell)
-venv\Scripts\Activate.ps1
 ```
 
-### 2. Configure as variáveis de ambiente
+### 2. Crie o ambiente virtual e instale o Invoke
+
+O script abaixo cria o `venv`, ativa e instala o `invoke` — necessário para os próximos passos.
+
+```bash
+# Windows (PowerShell)
+py .\scripts\make_env.py
+
+# Linux / macOS
+python3 -m venv venv
+source venv/bin/activate
+pip install invoke python-dotenv
+```
+
+### 3. Configure as variáveis de ambiente
 
 ```bash
 # Copie o arquivo de exemplo
@@ -113,22 +118,19 @@ cp .env.example .env.dev
 > python -c "import secrets; print(secrets.token_hex(32))"
 > ```
 
-### 3. Instale as dependências
+### 4. Instale as dependências do projeto
 
 ```bash
-pip install -e ".[dev,test]"
-
-# Ou via Invoke:
 invoke install
 ```
 
-### 4. Crie o banco de dados
+### 5. Crie o banco de dados
 
 ```bash
 flask create-db
 ```
 
-### 5. (Opcional) Popule com dados de exemplo
+### 6. (Opcional) Popule com dados de exemplo
 
 ```bash
 invoke seed-dev
@@ -142,14 +144,15 @@ Cria 3 usuários de teste — todos com senha `123456`:
 | Prestador | `heitor@email.com` |
 | Prestador | `antony@email.com` |
 
-### 6. Rode a aplicação
+### 7. Rode a aplicação
 
 ```bash
 invoke run
-# ou: flask run
 ```
 
 Acesse: [http://localhost:5000](http://localhost:5000)
+
+> ⚠️ **Não use `flask run` diretamente** — o `invoke run` carrega o `.env.dev` automaticamente antes de iniciar o servidor. Sem ele, a aplicação não encontra a `SECRET_KEY` e outras variáveis.
 
 ---
 
@@ -157,10 +160,25 @@ Acesse: [http://localhost:5000](http://localhost:5000)
 
 ```bash
 invoke test
-# ou: pytest -v
 ```
 
+> ⚠️ **Não use `pytest -v` diretamente** — o `invoke test` carrega o `.env.test` antes de rodar os testes, incluindo `WTF_CSRF_ENABLED=0` necessário para os formulários funcionarem nos testes.
+
 Os testes cobrem rotas públicas, formulários, autenticação e proteção de rotas.
+
+---
+
+## Referência de comandos
+
+| Comando | O que faz |
+|---|---|
+| `invoke run` | Inicia o servidor em modo desenvolvimento |
+| `invoke test` | Roda os testes com `.env.test` |
+| `invoke install` | Instala todas as dependências |
+| `invoke seed-dev` | Popula o banco com dados de exemplo |
+| `invoke lint` | Verifica qualidade de código (flake8) |
+| `invoke format` | Formata o código automaticamente (black) |
+| `invoke prod` | Inicia o servidor em modo produção |
 
 ---
 
@@ -170,19 +188,19 @@ Os testes cobrem rotas públicas, formulários, autenticação e proteção de r
 helpnow/
 ├── app.py                    # Application factory (create_app)
 ├── pyproject.toml            # Dependências e metadados
-├── tasks.py                  # Automação com Invoke
+├── tasks.py                  # Automação com Invoke (invoke run, test…)
 ├── .env.example              # Template de variáveis de ambiente
 ├── LICENSE
 ├── README.md
 │
 ├── .github/
-│   ├── images/               # Screenshots do projeto (README)
+│   ├── images/               # Screenshots do projeto (usadas no README)
 │   └── workflows/
 │       └── tests.yml         # CI — roda os testes a cada push
 │
 ├── scripts/
-│   ├── gerar_er.py           # Gerador do diagrama ER
-│   └── make_env.py           # Setup de ambiente (Windows)
+│   ├── make_env.py           # Cria venv e instala invoke (Windows)
+│   └── gerar_er.py           # Gera o diagrama ER do banco
 │
 ├── docs/
 │   └── er_diagram.png        # Diagrama do banco de dados
@@ -204,11 +222,11 @@ helpnow/
 
 Copie `.env.example` para `.env.dev` e preencha — **nunca suba arquivos `.env` reais**.
 
-| Arquivo | Uso |
+| Arquivo | Usado por |
 |---|---|
-| `.env.dev` | Desenvolvimento local |
-| `.env.test` | Testes automatizados |
-| `.env.prod` | Produção |
+| `.env.dev` | `invoke run` — desenvolvimento local |
+| `.env.test` | `invoke test` — testes automatizados |
+| `.env.prod` | `invoke prod` — produção |
 
 ---
 
