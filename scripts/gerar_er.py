@@ -1,5 +1,8 @@
 """
 Gera o diagrama ER do HelpNOW usando graphviz.
+NÃO ESQUECA DE INSTALAR O graphviz E A BIBLIOTECA graphviz DO PYTHON ANTES DE RODAR ESTE SCRIPT:
+    https://graphviz.org/download/
+    pip install graphviz
 """
 
 import graphviz
