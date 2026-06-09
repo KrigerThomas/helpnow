@@ -92,17 +92,26 @@ cd helpnow
 
 ### 2. Crie o ambiente virtual e instale o Invoke
 
-O script abaixo cria o `venv`, ativa e instala o `invoke` — necessário para os próximos passos.
+**Windows (PowerShell)** — rode o script de setup e depois ative o venv manualmente:
 
-```bash
-# Windows (PowerShell)
+```powershell
+# Cria o venv e instala o invoke
 py .\scripts\make_env.py
 
-# Linux / macOS
+# Ativa o venv (necessário fazer isso toda vez que abrir o terminal)
+.\venv\Scripts\Activate.ps1
+```
+
+**Linux / macOS:**
+
+```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install invoke python-dotenv
 ```
+
+> O `(venv)` no início da linha indica que o ambiente está ativo.  
+> Para desativar quando terminar: `deactivate`
 
 ### 3. Configure as variáveis de ambiente
 
