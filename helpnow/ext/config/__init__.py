@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 def init_app(app):
@@ -38,3 +39,10 @@ def init_app(app):
             'flask_debugtoolbar.panels.route_list.RouteListDebugPanel',
             # 'flask_debugtoolbar.panels.profiler.ProfilerDebugPanel', <--- REMOVA OU COMENTE ESTA LINHA
         )
+    # Filtro Jinja2: converte UTC → horário de Brasília (UTC-3)
+    def brasilia(dt):
+        if dt is None:
+            return dt
+        return dt - timedelta(hours=3)
+
+    app.jinja_env.filters['brasilia'] = brasilia

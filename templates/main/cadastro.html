@@ -101,7 +101,6 @@
                       {{ form.photo(class="input"+(" is-danger" if form.photo.errors else ""), placeholder="https://...") }}
                       <span class="icon is-left"><i class="fas fa-image"></i></span>
                     </div>
-                    <p class="help">Cole o link direto de uma foto — use <strong>postimages.org</strong> (gratuito, sem conta)</p>
                     {% for e in form.photo.errors %}<p class="help is-danger">{{ e }}</p>{% endfor %}
                   </div>
                 </div>

@@ -126,7 +126,7 @@ def init_app(app):
             sol = Solicitacao(
                 cliente_id=thomas.id,
                 servico_id=servicos_heitor[0].id,
-                mensagem="Preciso instalar 6 tomadas novas no quarto.",
+                mensagem="Preciso instalar 6 tomadas novas no meu quarto.",
                 endereco_texto="R. Inácio Higino, 1170 – Praia da Costa",
             )
             db.session.add(sol)

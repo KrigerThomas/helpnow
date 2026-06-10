@@ -140,7 +140,7 @@
                 {{ s.endereco_texto or '—' }}
                 <span class="mx-1">·</span>
                 <span class="icon"><i class="fas fa-clock"></i></span>
-                {{ s.created_at.strftime('%d/%m/%Y %H:%M') }}
+                {{ (s.created_at | brasilia).strftime('%d/%m/%Y %H:%M') }}
               </p>
 
               <div class="buttons">
@@ -312,7 +312,7 @@
               <div class="is-flex is-align-items-center is-justify-content-space-between mt-2">
                 <p class="is-size-7 has-text-grey">
                   <span class="icon"><i class="fas fa-calendar"></i></span>
-                  {{ s.created_at.strftime('%d/%m/%Y') }}
+                  {{ (s.created_at | brasilia).strftime('%d/%m/%Y') }}
                 </p>
                 {# Botão que abre o modal de detalhes desta solicitação #}
                 <button class="button is-info is-light is-small is-rounded"
@@ -437,7 +437,7 @@
 
               <p class="is-size-7 has-text-grey">
                 <span class="icon is-small"><i class="fas fa-clock"></i></span>
-                Solicitado em {{ s.created_at.strftime('%d/%m/%Y às %H:%M') }}
+                Solicitado em {{ (s.created_at | brasilia).strftime('%d/%m/%Y às %H:%M') }}
               </p>
 
             </section>
