@@ -61,7 +61,7 @@ def init_app(app):
             )
             thomas.set_password("123456")
             thomas.addresses.append(
-                Address(road="R. Inácio Higino", number="1170",
+                Address(road="Avenida Champagnat", number="925",
                         district="Praia da Costa", zipcode="29146-010", city=vila_velha)
             )
             thomas.role_associations.append(RoleUser(role=role_cliente))
