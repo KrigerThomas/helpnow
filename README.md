@@ -17,7 +17,7 @@ Conecta clientes que precisam de serviços (elétrica, hidráulica, limpeza, TI,
 <br>
 
 Projeto desenvolvido para a disciplina de **Desenvolvimento Web — UVV**  
-**Grupo:** Antony Novais · Heitor Rodrigues · Thomás Kriger
+**Grupo:** Antony Novais · Heitor Rodrigues Araujo · Thomás Kriger
 
 </div>
 
