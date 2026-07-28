@@ -58,6 +58,21 @@ Projeto desenvolvido para a disciplina de **Desenvolvimento Web — UVV**
 
 ---
 
+## Documentação
+
+A documentação técnica completa do projeto está disponível em [`docs/documentacao_helpnow.pdf`](docs/documentacao_helpnow.pdf) e inclui:
+
+- Descrição geral do produto e problema endereçado
+- Justificativa da stack tecnológica
+- Arquitetura adotada (Application Factory, estrutura de pastas)
+- Diagrama do banco de dados (modelo ER) e decisões de design
+- Detalhamento técnico das principais partes do código
+- Estratégia de testes automatizados
+- Qualidade de código e boas práticas
+- Principais desafios encontrados durante o desenvolvimento e como foram resolvidos
+
+---
+
 ## Stack tecnológica
 
 | Camada | Tecnologia |
@@ -198,31 +213,32 @@ helpnow/
 ├── app.py                    # Application factory (create_app)
 ├── pyproject.toml            # Dependências e metadados
 ├── tasks.py                  # Automação com Invoke (invoke run, test…)
-├── .env.example              # Template de variáveis de ambiente
+├── .env.example               # Template de variáveis de ambiente
 ├── LICENSE
 ├── README.md
 │
 ├── .github/
-│   ├── images/               # Screenshots do projeto (usadas no README)
+│   ├── images/                # Screenshots do projeto (usadas no README)
 │   └── workflows/
-│       └── tests.yml         # CI — roda os testes a cada push
+│       └── tests.yml          # CI — roda os testes a cada push
 │
 ├── scripts/
-│   ├── make_env.py           # Cria venv e instala invoke (Windows)
-│   └── gerar_er.py           # Gera o diagrama ER do banco
+│   ├── make_env.py            # Cria venv e instala invoke (Windows)
+│   └── gerar_er.py            # Gera o diagrama ER do banco
 │
 ├── docs/
-│   └── er_diagram.png        # Diagrama do banco de dados
+│   ├── er_diagram.png         # Diagrama do banco de dados
+│   └── documentacao_helpnow.pdf  # Documentação técnica completa
 │
 ├── helpnow/
-│   ├── ext/                  # Extensões Flask (db, login, config, cli…)
-│   ├── models/               # Modelos SQLAlchemy (User, Servico, Solicitacao…)
-│   ├── views/                # Blueprints e rotas (main, auth, perfil)
-│   └── forms/                # Formulários WTForms (auth, servico, perfil…)
+│   ├── ext/                   # Extensões Flask (db, login, config, cli…)
+│   ├── models/                # Modelos SQLAlchemy (User, Servico, Solicitacao…)
+│   ├── views/                 # Blueprints e rotas (main, auth, perfil)
+│   └── forms/                 # Formulários WTForms (auth, servico, perfil…)
 │
-├── templates/main/           # Templates Jinja2
-├── static/css/               # CSS customizado (Bulma base)
-└── tests/                    # Testes automatizados (pytest)
+├── templates/main/            # Templates Jinja2
+├── static/css/                # CSS customizado (Bulma base)
+└── tests/                     # Testes automatizados (pytest)
 ```
 
 ---
