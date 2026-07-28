@@ -176,7 +176,6 @@ invoke run
 
 Acesse: [http://localhost:5000](http://localhost:5000)
 
-> ⚠️ **Não use `flask run` diretamente** — o `invoke run` carrega o `.env.dev` automaticamente antes de iniciar o servidor. Sem ele, a aplicação não encontra a `SECRET_KEY` e outras variáveis.
 
 ---
 
@@ -186,7 +185,6 @@ Acesse: [http://localhost:5000](http://localhost:5000)
 invoke test
 ```
 
-> ⚠️ **Não use `pytest -v` diretamente** — o `invoke test` carrega o `.env.test` antes de rodar os testes, incluindo `WTF_CSRF_ENABLED=0` necessário para os formulários funcionarem nos testes.
 
 Os testes cobrem rotas públicas, formulários, autenticação e proteção de rotas.
 
