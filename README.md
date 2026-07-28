@@ -60,7 +60,7 @@ Projeto desenvolvido para a disciplina de **Desenvolvimento Web — UVV**
 
 ## Documentação
 
-A documentação técnica completa do projeto está disponível em [`docs/documentacao_helpnow.pdf`](docs/documentacao_helpnow.pdf) e inclui:
+A documentação técnica completa do projeto está disponível em [`docs/documentacao_helpnow.pdf`](docs/documentacao_helpnow.pdf) , foi utilizada para auxiliar na apresentação em sala e inclui muito mais detalhadamente sobre:
 
 - Descrição geral do produto e problema endereçado
 - Justificativa da stack tecnológica
